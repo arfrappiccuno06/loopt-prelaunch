@@ -57,8 +57,9 @@ export async function submitWaitlist({
       return { ok: true };
     }
 
-    // Never surface raw Supabase errors to the user.
-    console.error("waitlist insert failed:", error); // TEMP: remove after debugging
+    // Never surface raw Supabase errors to the user. Log only in dev so the
+    // raw error never reaches the production browser console.
+    if (__DEV__) console.error("waitlist insert failed:", error);
     return { ok: false, error: "Something went wrong. Please try again." };
   } catch {
     return {
