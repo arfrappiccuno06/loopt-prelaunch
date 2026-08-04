@@ -95,8 +95,7 @@ export default function PreLaunchSignup() {
           Secondhand fashion in Toronto, priced fairly.
         </Text>
         <Text className="mt-4 font-sans text-base leading-relaxed text-muted">
-          No reseller markup — just real closets at honest prices. Every seller
-          is vetted, so you can buy and sell with confidence.
+          Real closets at honest prices. Buy, sell, and trade with confidence. Add your closet to the Loop!
         </Text>
       </FadeIn>
 
