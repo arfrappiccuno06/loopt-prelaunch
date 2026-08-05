@@ -8,23 +8,36 @@ import { SafeAreaView } from "react-native-safe-area-context";
 // on native — swap to expo-image for native motion.
 const SKYLINE = require("../assets/toronto-night.webp");
 
+// Native art dimensions of the skyline WebP, used to compute a cover-fit crop.
+const ART_WIDTH = 1376;
+const ART_HEIGHT = 768;
+
 type ScreenProps = {
   children: ReactNode;
 };
 
 /** Page shell: full-bleed skyline background + centered, max-width column. */
 export function Screen({ children }: ScreenProps) {
-  // Concrete pixel dimensions so resizeMode="cover" actually fills the viewport.
-  // On web, percentage sizing (h-full/w-full) on <Image> collapses to the
-  // image's intrinsic 1376×768, leaving black gaps; explicit width/height from
-  // the window resolves that and behaves identically on native.
   const { width, height } = useWindowDimensions();
+  // Scale to cover the viewport with concrete pixel dimensions (on web,
+  // percentage sizing on <Image> collapses to the art's intrinsic size and
+  // leaves gaps). Then pin the image's right edge instead of centering the
+  // crop, so the CN tower on the right stays framed when the sides get cropped
+  // on narrow/portrait phones. Vertically centered.
+  const scale = Math.max(width / ART_WIDTH, height / ART_HEIGHT);
+  const artWidth = ART_WIDTH * scale;
+  const artHeight = ART_HEIGHT * scale;
   return (
-    <View className="flex-1 bg-night">
+    <View className="flex-1 overflow-hidden bg-night">
       <Image
         source={SKYLINE}
-        resizeMode="cover"
-        style={{ position: "absolute", top: 0, left: 0, width, height }}
+        style={{
+          position: "absolute",
+          right: 0,
+          top: (height - artHeight) / 2,
+          width: artWidth,
+          height: artHeight,
+        }}
       />
       <View className="absolute inset-0 bg-night/55" />
       <SafeAreaView className="flex-1">
