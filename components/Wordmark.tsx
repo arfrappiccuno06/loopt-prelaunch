@@ -10,7 +10,7 @@ type WordmarkProps = {
 export function Wordmark({ className }: WordmarkProps) {
   return (
     <Text className={`font-display tracking-tight text-text ${className ?? ""}`}>
-      Loopt
+      Loopt TO
     </Text>
   );
 }

@@ -75,7 +75,7 @@ export default function PreLaunchSignup() {
             </Text>
             <Text className="mt-3 text-center font-sans text-base leading-relaxed text-muted">
               We&apos;ll email you the moment Loopt opens in Toronto. Until then,
-              follow along for early drops and updates.
+              follow along Loopt's journey!
             </Text>
             <InstagramLink className="mt-7" />
           </View>
