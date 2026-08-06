@@ -2,7 +2,7 @@ import { Linking, Text, View } from "react-native";
 
 import { AnimatedPressable } from "./AnimatedPressable";
 
-const INSTAGRAM_HANDLE = "fart3much";
+const INSTAGRAM_HANDLE = "loopt.to";
 const INSTAGRAM_URL = `https://instagram.com/${INSTAGRAM_HANDLE}`;
 
 type InstagramLinkProps = {

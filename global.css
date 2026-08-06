@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Skyline background (web). Applied as a CSS background so the image is in the
+   compiled stylesheet and paints on first render — no dependency on JS/hydration
+   (an RN <Image> sized from useWindowDimensions is 0×0 during static export, and
+   a raw <img> breaks Expo's server render). background-position keeps the CN
+   tower framed when the sides crop on narrow screens. Served from public/. */
+.skyline-bg {
+  background-image: url("/toronto-night.webp");
+  background-size: cover;
+  background-position: right center;
+  background-repeat: no-repeat;
+}
