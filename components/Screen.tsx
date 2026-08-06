@@ -1,11 +1,14 @@
 import type { ReactNode } from "react";
-import { Image, ScrollView, useWindowDimensions, View } from "react-native";
+import { Image, Platform, ScrollView, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-// Toronto-night pixel-art skyline (animated WebP, ~558 KB). Drop a replacement
-// at this exact path (assets/toronto-night.webp) to swap it — no code change
-// needed. Animated WebP plays on web; the base RN <Image> shows a static frame
-// on native — swap to expo-image for native motion.
+// Toronto-night pixel-art skyline (animated WebP, ~1 MB). On web it's rendered
+// as a CSS background (see `.skyline-bg` in global.css) sourced from
+// public/toronto-night.webp, so it paints on first load without waiting for JS.
+// Native uses this bundled copy via <Image>. To swap the art, replace BOTH
+// assets/toronto-night.webp and public/toronto-night.webp. Animated WebP plays
+// on web; the base RN <Image> shows a static frame on native — swap to
+// expo-image for native motion.
 const SKYLINE = require("../assets/toronto-night.webp");
 
 // Native art dimensions of the skyline WebP, used to compute a cover-fit crop.
@@ -19,26 +22,28 @@ type ScreenProps = {
 /** Page shell: full-bleed skyline background + centered, max-width column. */
 export function Screen({ children }: ScreenProps) {
   const { width, height } = useWindowDimensions();
-  // Scale to cover the viewport with concrete pixel dimensions (on web,
-  // percentage sizing on <Image> collapses to the art's intrinsic size and
-  // leaves gaps). Then pin the image's right edge instead of centering the
-  // crop, so the CN tower on the right stays framed when the sides get cropped
-  // on narrow/portrait phones. Vertically centered.
+  // Native: scale to cover with concrete pixel dimensions, pinning the right
+  // edge so the CN tower stays framed on narrow screens (vertically centered).
   const scale = Math.max(width / ART_WIDTH, height / ART_HEIGHT);
   const artWidth = ART_WIDTH * scale;
   const artHeight = ART_HEIGHT * scale;
   return (
     <View className="flex-1 overflow-hidden bg-night">
-      <Image
-        source={SKYLINE}
-        style={{
-          position: "absolute",
-          right: 0,
-          top: (height - artHeight) / 2,
-          width: artWidth,
-          height: artHeight,
-        }}
-      />
+      {Platform.OS === "web" ? (
+        <View className="skyline-bg absolute inset-0" />
+      ) : (
+        <Image
+          source={SKYLINE}
+          resizeMode="cover"
+          style={{
+            position: "absolute",
+            right: 0,
+            top: (height - artHeight) / 2,
+            width: artWidth,
+            height: artHeight,
+          }}
+        />
+      )}
       <View className="absolute inset-0 bg-night/55" />
       <SafeAreaView className="flex-1">
         <ScrollView
