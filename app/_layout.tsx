@@ -10,6 +10,10 @@ import {
 } from "@expo-google-fonts/hanken-grotesk";
 import { JetBrainsMono_500Medium } from "@expo-google-fonts/jetbrains-mono";
 import {
+  Silkscreen_400Regular,
+  Silkscreen_700Bold,
+} from "@expo-google-fonts/silkscreen";
+import {
   SpaceGrotesk_600SemiBold,
   SpaceGrotesk_700Bold,
   useFonts,
@@ -27,6 +31,8 @@ export default function RootLayout() {
     HankenGrotesk_500Medium,
     HankenGrotesk_600SemiBold,
     JetBrainsMono_500Medium,
+    Silkscreen_400Regular,
+    Silkscreen_700Bold,
   });
 
   return (

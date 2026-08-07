@@ -3,5 +3,13 @@
   "buildCommand": "expo export --platform web",
   "outputDirectory": "dist",
   "framework": null,
-  "cleanUrls": true
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "loopt-to.vercel.app" }],
+      "destination": "https://loopt.to/:path*",
+      "permanent": false
+    }
+  ]
 }
