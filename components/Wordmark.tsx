@@ -5,12 +5,10 @@ type WordmarkProps = {
   className?: string;
 };
 
-/** The Loopt wordmark — Space Grotesk, tight tracking, modern. Caller sets
- *  size and color via className. */
+/** The Loopt wordmark — Silkscreen pixel type. Caller sets size and color via
+ *  className. */
 export function Wordmark({ className }: WordmarkProps) {
   return (
-    <Text className={`font-display tracking-tight text-text ${className ?? ""}`}>
-      Loopt TO
-    </Text>
+    <Text className={`font-pixel text-text ${className ?? ""}`}>Loopt TO</Text>
   );
 }

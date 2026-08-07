@@ -1,17 +1,19 @@
 import { useState } from "react";
-import {
-  ActivityIndicator,
-  Platform,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Text, View } from "react-native";
 
-import { AnimatedPressable } from "@/components/AnimatedPressable";
 import { FadeIn } from "@/components/FadeIn";
 import { InstagramLink } from "@/components/InstagramLink";
 import { Screen } from "@/components/Screen";
 import { Wordmark } from "@/components/Wordmark";
+import {
+  PixelButton,
+  PixelCard,
+  PixelCheck,
+  PixelFrame,
+  PixelInput,
+  PixelSegmented,
+} from "@/components/pixel";
+import { toneShades, typography } from "@/lib/theme";
 import { isValidEmail, submitWaitlist } from "@/lib/waitlist";
 import type { WaitlistRole } from "@/types/waitlist";
 
@@ -23,20 +25,12 @@ const ROLES: { value: WaitlistRole; label: string }[] = [
   { value: "both", label: "Both" },
 ];
 
-// Web-only smooth transitions (RN ignores these style keys on native).
-// Typed loose because these CSS keys aren't in RN's style types.
-const smooth: any =
-  Platform.OS === "web"
-    ? { transitionProperty: "all", transitionDuration: "160ms" }
-    : null;
-
 export default function PreLaunchSignup() {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<WaitlistRole | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [attempted, setAttempted] = useState(false);
-  const [focused, setFocused] = useState(false);
 
   const emailValid = isValidEmail(email);
   const showEmailError = attempted && email.trim().length > 0 && !emailValid;
@@ -66,19 +60,31 @@ export default function PreLaunchSignup() {
     return (
       <Screen>
         <FadeIn>
-          <View className="items-center rounded-3xl border border-line bg-surface p-8">
-            <View className="h-14 w-14 items-center justify-center rounded-full bg-cyan">
-              <Text className="font-display text-2xl text-ink">✓</Text>
+          <PixelCard>
+            <View style={{ alignItems: "center" }}>
+              <PixelFrame
+                frameColor={toneShades.green.base}
+                fillColor={toneShades.green.fill}
+                inset
+                contentStyle={{
+                  width: 52,
+                  height: 52,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <PixelCheck size={26} color={toneShades.green.base} />
+              </PixelFrame>
+              <Text className="mt-6 text-center font-pixel text-2xl text-text">
+                You&apos;re in!
+              </Text>
+              <Text className="mt-3 text-center font-sans text-base leading-relaxed text-muted">
+                We&apos;ll email you the moment Loopt opens in Toronto. Until then,
+                follow along Loopt&apos;s journey!
+              </Text>
+              <InstagramLink className="mt-7" />
             </View>
-            <Text className="mt-6 text-center font-display text-3xl text-text">
-              You&apos;re in!
-            </Text>
-            <Text className="mt-3 text-center font-sans text-base leading-relaxed text-muted">
-              We&apos;ll email you the moment Loopt opens in Toronto. Until then,
-              follow along Loopt's journey!
-            </Text>
-            <InstagramLink className="mt-7" />
-          </View>
+          </PixelCard>
         </FadeIn>
       </Screen>
     );
@@ -87,133 +93,99 @@ export default function PreLaunchSignup() {
   return (
     <Screen>
       <FadeIn>
-        <Wordmark className="text-xl text-text" />
+        <Wordmark className="text-4xl text-text" />
       </FadeIn>
 
       <FadeIn delay={70} style={{ marginTop: 20 }}>
-        <Text className="font-display text-4xl leading-tight text-text">
+        <Text className="font-pixel text-2xl leading-snug text-text">
           Secondhand fashion in Toronto, priced fairly.
         </Text>
         <Text className="mt-4 font-sans text-base leading-relaxed text-muted">
-          Real closets at honest prices. Buy, sell, and trade with confidence. Add your closet to the Loop!
+          Real closets at honest prices. Buy, sell, and trade with confidence. Add
+          your closet to the Loop!
         </Text>
       </FadeIn>
 
       {/* Form card */}
       <FadeIn delay={150} style={{ marginTop: 28 }}>
-        <View
-          className="rounded-3xl border border-line bg-surface p-5"
-          style={{ boxShadow: "0px 24px 60px 0px rgba(0,0,0,0.45)" }}
-        >
+        <PixelCard contentStyle={{ padding: 28 }}>
           {/* Email */}
-          <Text className="mb-2 font-mono text-[11px] uppercase tracking-[2px] text-muted">
-            Email
-          </Text>
-          <TextInput
+          <PixelInput
+            label="Email"
             value={email}
             onChangeText={setEmail}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
             placeholder="you@email.com"
-            placeholderTextColor="#6c6690"
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
             autoComplete="email"
             inputMode="email"
-            editable={!loading}
             returnKeyType="go"
-            selectionColor="#74F5FF"
             onSubmitEditing={handleSubmit}
-            className={`rounded-2xl border bg-surface2 px-4 py-3.5 font-sans text-base text-text ${
-              showEmailError
-                ? "border-error"
-                : focused
-                  ? "border-cyan"
-                  : "border-line"
-            }`}
-            style={smooth}
+            disabled={loading}
+            error={showEmailError ? "Enter a valid email address." : undefined}
           />
-          {showEmailError ? (
-            <Text className="mt-2 font-sans text-xs text-error">
-              Enter a valid email address.
-            </Text>
-          ) : null}
 
           {/* Role — segmented control */}
           <Text className="mb-2 mt-6 font-mono text-[11px] uppercase tracking-[2px] text-muted">
             I&apos;m mostly here to
           </Text>
-          <View className="flex-row gap-2.5">
-            {ROLES.map((option) => {
-              const selected = role === option.value;
-              return (
-                <View key={option.value} className="flex-1">
-                  <AnimatedPressable
-                    accessibilityRole="radio"
-                    accessibilityState={{ selected }}
-                    onPress={() => setRole(option.value)}
-                    disabled={loading}
-                    fullWidth
-                    glow={selected ? "rgba(116,245,255,0.35)" : undefined}
-                    className={`min-h-[52px] items-center justify-center rounded-2xl border ${
-                      selected
-                        ? "border-cyan bg-cyan"
-                        : "border-line bg-surface2"
-                    }`}
-                  >
-                    <Text
-                      className={`font-sanssemi text-base ${
-                        selected ? "text-ink" : "text-text"
-                      }`}
-                    >
-                      {option.label}
-                    </Text>
-                  </AnimatedPressable>
-                </View>
-              );
-            })}
-          </View>
+          <PixelSegmented
+            tone="magenta"
+            options={ROLES}
+            value={role}
+            onChange={setRole}
+            disabled={loading}
+            accessibilityLabel="I'm mostly here to"
+          />
           {showRoleError ? (
-            <Text className="mt-2 font-sans text-xs text-error">
+            <Text
+              style={{
+                fontFamily: typography.fontMono,
+                fontSize: typography.size.xs,
+                color: toneShades.red.base,
+                marginTop: 8,
+              }}
+            >
               Pick one so we know how to welcome you.
             </Text>
           ) : null}
 
           {/* Submit */}
-          <View className="mt-6">
-            <AnimatedPressable
-              accessibilityRole="button"
-              accessibilityState={{ disabled: loading, busy: loading }}
-              onPress={handleSubmit}
-              disabled={loading}
+          <View style={{ marginTop: 24 }}>
+            <PixelButton
+              tone="cyan"
               fullWidth
-              glow="rgba(116,245,255,0.4)"
-              className="min-h-[56px] flex-row items-center justify-center gap-2 rounded-2xl bg-cyan px-4"
+              loading={loading}
+              onPress={handleSubmit}
+              accessibilityLabel="Join the waitlist"
             >
-              {loading ? (
-                <>
-                  <ActivityIndicator color="#0b0a12" />
-                  <Text className="font-sanssemi text-base text-ink">
-                    Joining…
-                  </Text>
-                </>
-              ) : (
-                <Text className="font-sanssemi text-base text-ink">
-                  Join the waitlist
-                </Text>
-              )}
-            </AnimatedPressable>
+              {loading ? "Joining…" : "Join the waitlist"}
+            </PixelButton>
           </View>
 
           {status === "error" ? (
-            <View className="mt-4 rounded-xl border border-error/40 bg-error/10 px-3 py-2.5">
-              <Text className="text-center font-sans text-xs text-error">
+            <PixelFrame
+              frameColor={toneShades.red.base}
+              fillColor={toneShades.red.fill}
+              inset
+              fullWidth
+              style={{ marginTop: 16 }}
+              contentStyle={{ paddingHorizontal: 12, paddingVertical: 10 }}
+            >
+              <Text
+                style={{
+                  fontFamily: typography.fontMono,
+                  fontSize: typography.size.xs,
+                  color: toneShades.red.base,
+                  textAlign: "center",
+                }}
+              >
                 {errorMessage}
               </Text>
-            </View>
+            </PixelFrame>
           ) : null}
-        </View>
+        </PixelCard>
       </FadeIn>
     </Screen>
   );
